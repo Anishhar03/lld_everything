@@ -1,48 +1,149 @@
-# Cache LLD
+# Cache Low Level Design
 
 ## Problem Statement
 
-Design an in-memory cache with eviction policies like LRU and TTL.
+Design an in-memory cache with get, put, delete, capacity, eviction policy, and optional TTL.
 
-## Clarifying Questions
+## How To Start In Interview
 
-- What are the main actors?
-- What is in scope for this design?
-- What is out of scope?
-- Are concurrent requests possible?
-- Do we need persistence?
-- What failure cases should be handled?
+Say:
+
+"I will first clarify scope, then identify entities and workflows. After that I will discuss class design, patterns, concurrency, and edge cases."
+
+## Functional Requirements
+
+- Support the main user workflow end to end.
+- Validate invalid operations.
+- Keep domain state consistent.
+- Return meaningful success/failure results.
+- Allow future extension without rewriting the core model.
+
+## Non-Functional Requirements
+
+- Correctness over cleverness.
+- Simple APIs.
+- Thread safety for shared mutable resources.
+- Clear separation between models, services, repositories, and strategies.
+- Testable code.
 
 ## Core Entities
 
-- User or actor
-- Domain object
-- Service class
-- Repository or storage abstraction
-- Strategy or policy class where rules vary
+- `Cache`
+- `CacheEntry`
+- `Node`
+- `EvictionPolicy`
+- `Clock`
 
-## Design Approach
+## Core Services
 
-1. Start with use cases.
-2. Identify nouns and verbs.
-3. Define entities and value objects.
-4. Move business workflows into services.
-5. Use interfaces for variable behavior.
-6. Add validations and edge cases.
-7. Discuss concurrency and consistency.
+- `CacheService`
+- `EvictionStrategy`
+- `TtlCleanupService`
 
-## Patterns Commonly Useful
+## High-Level Workflow
 
-- Strategy for variable policies.
-- Factory for object creation.
-- State for lifecycle-heavy objects.
-- Observer for notifications/events.
-- Repository for storage abstraction.
+```mermaid
+flowchart TD
+    A[User request] --> B[Validate input]
+    B --> C[Load domain state]
+    C --> D[Apply business rules]
+    D --> E[Update state atomically]
+    E --> F[Return result]
+```
 
-## Interview Tips
+## Class Relationship Sketch
 
-- Keep the first design simple.
-- Add complexity only after interviewer asks.
-- Explain tradeoffs.
-- Mention concurrency risks if shared resources exist.
-- Use clean names and small methods.
+```mermaid
+classDiagram
+    class Controller
+    class DomainService
+    class Repository
+    class Entity
+    class Strategy
+    Controller --> DomainService
+    DomainService --> Repository
+    DomainService --> Entity
+    DomainService --> Strategy
+```
+
+## Suggested Patterns
+
+- Strategy for eviction policy
+- Factory for cache type
+- Decorator for metrics/logging
+
+## Detailed Design Steps
+
+1. Write down actors and use cases.
+2. Model entities that have identity.
+3. Model value objects for immutable concepts.
+4. Put workflow orchestration inside services.
+5. Put variable rules behind strategies.
+6. Keep repositories as storage abstractions.
+7. Make state transitions explicit.
+8. Add concurrency protection around shared resources.
+9. Write demo flows or unit tests.
+
+## Concurrency Discussion
+
+Map and linked-list updates must be atomic. Use one lock around get/put mutation for simple implementation, or segmented locks for higher throughput.
+
+## Edge Cases
+
+- Invalid ID or missing object.
+- Duplicate request.
+- Expired lock or stale state.
+- Payment failure or external service failure.
+- Concurrent modification.
+- Cancellation after partial success.
+- Retry after timeout.
+
+## API Sketch
+
+```java
+class CacheService {
+    // validate request
+    // load current state
+    // apply domain rules
+    // persist or update state
+    // return response
+}
+```
+
+## Interview Deep-Dive Points
+
+- Explain why each class exists.
+- Mention which rules are likely to change.
+- Use Strategy for changeable policies.
+- Use State when lifecycle behavior changes.
+- Use Factory when object creation depends on type.
+- Keep concurrency discussion concrete.
+
+## What To Say If Asked For Production Scale
+
+"For production, I would move in-memory repositories to durable storage, use transactions or optimistic locking for consistency, add idempotency keys for retries, and expose APIs through controllers. For distributed deployments, I would avoid local-only locks and rely on database constraints, distributed locks, or message-driven workflows depending on the exact consistency requirement."
+
+## Domain-Specific Deep Dive
+
+### LRU Cache Internals
+
+Use:
+
+- HashMap for O(1) key lookup
+- Doubly linked list for O(1) recency update
+
+On `get(key)`:
+
+1. Return null if missing.
+2. Move node to head.
+3. Return value.
+
+On `put(key, value)`:
+
+1. Update existing node if present.
+2. Else add new node to head.
+3. If capacity exceeded, remove tail.
+
+### Thread Safety
+
+Map and list must be updated together. Protect both with the same lock.

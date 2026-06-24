@@ -1,43 +1,82 @@
 # LLD Everything
 
-A complete, beginner-friendly Low Level Design repository inspired by the playlist:
+This repository is a deep Low Level Design learning resource inspired by the YouTube playlist:
 
 https://www.youtube.com/playlist?list=PL6W8uoQQ2c61X_9e6Net0WdYZidm7zooW
 
-The goal of this repo is to make LLD easy to revise for interviews and practical machine-coding rounds. It includes:
+It is built for interview preparation, machine-coding rounds, and real engineering design discussions. The repo goes beyond short definitions: every major concept explains why it exists, when to use it, how to implement it, what tradeoffs matter, and how to speak about it in interviews.
 
-- OOP fundamentals
-- UML basics
-- SOLID principles
-- GoF design patterns
-- Concurrency and practical engineering patterns
-- Classic LLD interview problems
-- Runnable Java implementations
-- Easy explanations, tradeoffs, and interview notes
+## What Is Inside
 
-## How To Use This Repo
+- Deep LLD roadmap and thinking process
+- OOP fundamentals with design examples
+- SOLID principles with before/after reasoning
+- UML and relationship modeling
+- Requirement gathering templates
+- All 22 GoF design patterns
+- Java implementation for every GoF design pattern
+- Concurrency notes for LLD interviews
+- Machine-coding templates
+- Deep case-study documents for common LLD problems
+- Interview question bank and revision sheet
 
-1. Start with `docs/00-roadmap.md`.
-2. Revise OOP and SOLID from `docs/01-oop-basics.md` and `docs/02-solid-principles.md`.
-3. Study patterns category-wise from `design-patterns/`.
-4. Run Java demos from `src/main/java/com/anish/lld`.
-5. Practice system designs from `case-studies/`.
+## Recommended Learning Order
 
-## Run Examples
+1. `docs/00-roadmap.md`
+2. `docs/08-how-to-think-in-lld.md`
+3. `docs/01-oop-basics.md`
+4. `docs/02-solid-principles.md`
+5. `docs/03-uml-basics.md`
+6. `docs/04-requirement-gathering.md`
+7. `docs/05-design-patterns-deep-dive.md`
+8. `docs/06-concurrency-for-lld.md`
+9. `docs/07-machine-coding-template.md`
+10. `design-patterns/`
+11. `case-studies/`
+
+## Run The Pattern Demos
 
 ```bash
 mvn test
 mvn exec:java -Dexec.mainClass="com.anish.lld.Main"
 ```
 
-If Maven is not installed, the source files are still readable as standalone Java examples.
+If Maven is unavailable:
 
-## Repository Map
+```bash
+javac -d target/classes $(find src/main/java -name "*.java")
+java -cp target/classes com.anish.lld.Main
+```
+
+On Windows PowerShell:
+
+```powershell
+$files = Get-ChildItem -Path src\main\java -Recurse -Filter *.java | ForEach-Object { $_.FullName }
+javac -d target\classes $files
+java -cp target\classes com.anish.lld.Main
+```
+
+## Repository Structure
 
 ```text
-docs/                 Core LLD notes
-design-patterns/      Pattern-wise README explanations
-src/main/java/         Java implementations
-case-studies/          LLD interview problems and workflows
-interview-prep/        Revision sheets and questions
+docs/                 Deep LLD theory and interview method
+design-patterns/      Pattern-by-pattern explanation, UML, tradeoffs
+src/main/java/         Runnable Java implementations
+case-studies/          Full LLD problem breakdowns
+interview-prep/        Revision sheets and question bank
 ```
+
+## How To Answer Any LLD Problem
+
+Use this mental model:
+
+1. Clarify requirements.
+2. Identify actors and use cases.
+3. Define core entities and value objects.
+4. Define services that coordinate workflows.
+5. Decide relationships between objects.
+6. Apply SOLID principles.
+7. Use design patterns only where they solve a real design pressure.
+8. Discuss concurrency and consistency.
+9. Add APIs and class-level code.
+10. Explain tradeoffs and future extensions.
