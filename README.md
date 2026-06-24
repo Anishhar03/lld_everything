@@ -1,82 +1,65 @@
-# LLD Everything
+# System Design Everything: LLD + HLD
 
-This repository is a deep Low Level Design learning resource inspired by the YouTube playlist:
+This repository is a deep system design learning resource covering both:
 
-https://www.youtube.com/playlist?list=PL6W8uoQQ2c61X_9e6Net0WdYZidm7zooW
+- Low Level Design (LLD)
+- High Level Design (HLD)
 
-It is built for interview preparation, machine-coding rounds, and real engineering design discussions. The repo goes beyond short definitions: every major concept explains why it exists, when to use it, how to implement it, what tradeoffs matter, and how to speak about it in interviews.
+It is inspired by these playlists:
+
+- LLD playlist: https://www.youtube.com/playlist?list=PL6W8uoQQ2c61X_9e6Net0WdYZidm7zooW
+- HLD playlist: https://www.youtube.com/playlist?list=PL6W8uoQQ2c63W58rpNFDwdrBnq5G3EfT7
+- HLD beginner playlist: https://www.youtube.com/playlist?list=PLlvkTvW25FtjlM61SIOcLS05SfwoYgMit
+- System design interview questions: https://www.youtube.com/playlist?list=PLPtUyMfD0mNJDZg50fg2CptjLBavHot47
 
 ## What Is Inside
 
-- Deep LLD roadmap and thinking process
-- OOP fundamentals with design examples
-- SOLID principles with before/after reasoning
-- UML and relationship modeling
-- Requirement gathering templates
+### LLD
+
+- OOP fundamentals
+- SOLID principles
+- UML basics
+- Requirement gathering
 - All 22 GoF design patterns
-- Java implementation for every GoF design pattern
-- Concurrency notes for LLD interviews
-- Machine-coding templates
-- Deep case-study documents for common LLD problems
-- Interview question bank and revision sheet
+- Java implementation for every GoF pattern
+- Classic LLD case studies
 
-## Recommended Learning Order
+### HLD
 
-1. `docs/00-roadmap.md`
-2. `docs/08-how-to-think-in-lld.md`
-3. `docs/01-oop-basics.md`
-4. `docs/02-solid-principles.md`
-5. `docs/03-uml-basics.md`
-6. `docs/04-requirement-gathering.md`
-7. `docs/05-design-patterns-deep-dive.md`
-8. `docs/06-concurrency-for-lld.md`
-9. `docs/07-machine-coding-template.md`
-10. `design-patterns/`
-11. `case-studies/`
+- HLD roadmap
+- Interview approach
+- Networking and protocols
+- Scalability and load balancing
+- Database design
+- Caching
+- Message queues
+- CAP and consistency
+- Storage, search, and indexing
+- Observability and reliability
+- Security and rate limiting
+- Capacity estimation
+- HLD case studies
+- System design practice questions
 
-## Run The Pattern Demos
+## Learning Path
+
+1. Start with `hld/00-hld-roadmap.md` for HLD.
+2. Read `hld/01-how-to-approach-hld-interviews.md`.
+3. Study each HLD building block under `hld/`.
+4. Practice HLD case studies from `hld/case-studies/`.
+5. Study LLD from `docs/` and `design-patterns/`.
+6. Practice LLD case studies from `case-studies/`.
+
+## Run Java LLD Pattern Demos
 
 ```bash
-mvn test
 mvn exec:java -Dexec.mainClass="com.anish.lld.Main"
 ```
 
-If Maven is unavailable:
-
-```bash
-javac -d target/classes $(find src/main/java -name "*.java")
-java -cp target/classes com.anish.lld.Main
-```
-
-On Windows PowerShell:
+Without Maven, use JDK directly:
 
 ```powershell
 $files = Get-ChildItem -Path src\main\java -Recurse -Filter *.java | ForEach-Object { $_.FullName }
 javac -d target\classes $files
 java -cp target\classes com.anish.lld.Main
 ```
-
-## Repository Structure
-
-```text
-docs/                 Deep LLD theory and interview method
-design-patterns/      Pattern-by-pattern explanation, UML, tradeoffs
-src/main/java/         Runnable Java implementations
-case-studies/          Full LLD problem breakdowns
-interview-prep/        Revision sheets and question bank
-```
-
-## How To Answer Any LLD Problem
-
-Use this mental model:
-
-1. Clarify requirements.
-2. Identify actors and use cases.
-3. Define core entities and value objects.
-4. Define services that coordinate workflows.
-5. Decide relationships between objects.
-6. Apply SOLID principles.
-7. Use design patterns only where they solve a real design pressure.
-8. Discuss concurrency and consistency.
-9. Add APIs and class-level code.
-10. Explain tradeoffs and future extensions.
